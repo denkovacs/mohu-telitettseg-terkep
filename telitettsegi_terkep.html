@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="style.css">
+    <title>MOHU | Telítettségi térkép</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+</head>
+<body>
+    <div id="nav" class="navbar-green"></div>
+    <div class="main-container">
+        <aside id="info-panel">
+            <h1> Telephely telítettségi térkép</h1>
+            <div id="filter-panel">
+                <h1>Szűrők</h1>
+                <div class="filter-row">
+                    <span class="label">Kategória:</span>
+                    <select id="kategoria-filter" class="regio-select">
+                        <option value="">Összes Kategória</option>
+                        <option value="Papír">Papír</option>
+                        <option value="Műanyag">Műanyag</option>
+                        <option value="Fém">Fém</option>
+                        <option value="Üveg">Üveg</option>
+                        <option value="Egyéb">Egyéb</option>
+                        <option value="Fa">Fa</option>
+                        <option value="Textil">Textil</option>
+                    </select>
+                </div>
+            </div>
+            <div id="info-placeholder">
+                <p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>
+            </div>
+        </aside>
+        <div id="map"></div>
+    </div>
+    <script src="script/script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="script/terkep.js"></script>
+</body>
+</html>

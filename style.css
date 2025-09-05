@@ -1,0 +1,245 @@
+body{
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    font-family: sans-serif;
+    background-color:white;
+    color: #3c3c3b;
+    flex-direction: column;
+}
+.main-container{
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+#map{
+    flex:none;
+    order: 1;
+    flex:none;
+    width: 70%;
+}
+#info-panel{
+    width: 0 0 30%;
+    padding: 15px;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+    width: 30%;
+}
+h1{
+    text-align: center;
+    font-size: 25px;
+}
+#info-placeholder{
+    margin-top:15px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background-color: #f0f0f0;
+    max-width: auto;
+    font-family: "Segoe UI", sans-serif;
+}
+#filter-panel{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+}
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.filter-btn-row{
+  display: flex;
+  gap:10;
+  justify-content: center;
+}
+.filter-row .label {
+    flex: 0 0 120px;
+}
+
+.date-input, .megye-select, .tipus-select, .filter-btn, .regio-select {
+    flex: 1;
+    min-width: 100px;
+}
+
+.filter-btn {
+    flex: none; 
+}
+
+.filter-btn{
+    color: black;
+    border: solid #008CBA;
+    padding: 10px 16px;
+    margin: 2px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.filter-btn.active{
+    background-color: #008CBA;
+    color: white;
+}
+.leaflet-marker-icon.circular-marker {
+    border-radius: 50%;
+    object-fit: cover;
+}
+.navbar{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  gap: 20px;
+}
+.navbar-index {
+  background-color: #cdc6bf;
+}
+.navbar-green{
+  background-color: #D8E02F;
+}
+.top-logo {
+  max-height: 50px;
+  object-fit: contain;
+}
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.date-filter-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.date-input {
+  padding: 8px 12px;
+  border: 2px solid #008CBA;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{
+  background-color: rgba(216, 224, 47, 0.3);
+}
+.marker-cluster div{
+  background-color: #D8E02F;
+}
+.megye-select, .tipus-select, .regio-select{
+  background-color:white;
+  border: 2px solid #008CBA;
+  color: #3c3c3b;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  width: auto;
+  margin: 5px;
+}
+.info-placeholder-katt{
+  text-align: center;
+  font-weight: 500;
+}
+.counters{
+  margin-top: 15px;
+  text-align: center;
+  padding-top:25px;
+  padding-bottom: 15px;
+  font-size: 25px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+}
+a{
+  text-decoration: none;
+  color: #3c3c3b;
+  font-size: 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-left:10px;
+}
+a:hover{
+  text-decoration:underline;
+  
+}
+.main-container-index{
+  background-image:url('/img/index-bg.png');
+  background-size: cover;
+  height:1500px;
+}
+.sor{
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+/* index toogle*/
+.menu-toggle{
+  display: none;
+  font-size: 32px;
+  background:none;
+  border: none;
+  cursor: pointer;
+  color: #3c3c3b;
+}
+.dropdown-menu{
+  display: flex;
+  align-items:center;
+  gap: 20px;
+}
+@media(max-width:768px){
+  /*hamburger menü*/
+  .menu-toggle{
+    display: block;
+  }
+  .dropdown-menu{
+   max-height: 0;
+   overflow: hidden;
+   flex-direction: column;
+   align-items: flex-start;
+   gap:15px;
+   width: 100%;
+   transition: max-height 0.3s ease;
+   padding: 0 20px;
+  }
+  .dropdown-index{
+    background-color: #cdc6bf;
+  }
+  .dropdown-green{
+    background-color:#D8E02F;
+  }
+  .dropdown-menu.show{
+    padding:15px 20px;
+    max-height:400px;
+  }
+
+  /*térkép*/
+  .main-container{
+    flex-direction: column;
+    overflow: visible;
+  }
+  #map{
+    height: 50vh;
+    order: 1;
+    flex: none;
+    width: 100%;
+  }
+  #info-panel{
+    width: 100%;
+    height: auto;
+    order: 2;
+  }
+}
+.disabled{
+  pointer-events: none;
+}
