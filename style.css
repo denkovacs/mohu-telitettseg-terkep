@@ -174,7 +174,7 @@ a:hover{
   
 }
 .main-container-index{
-  background-image:url('/img/index-bg.png');
+  background-image:url('img/index-bg.png');
   background-size: cover;
   height:1500px;
 }

@@ -49,7 +49,7 @@ function groupByCoordinates(data) {
     return grouped;
 }
 
-function renderMarkers(kategoriaFilter="", cikkszamFilter=""){
+function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter=""){
     markers.forEach(marker=>map.removeLayer(marker));
     markers.length=0;
     markerClusterGroup.clearLayers();
@@ -71,6 +71,17 @@ function renderMarkers(kategoriaFilter="", cikkszamFilter=""){
         }
         const capacityStr = locs[0].teljes_kapacitaas.replace(",", ".").replace("%", "");
         const capacity = parseFloat(capacityStr);
+
+        //Telítettség filter
+        let color = "";
+        if (capacity >= 0 && capacity < 50) color = "green";
+        else if (capacity >= 50 && capacity < 100) color = "yellow";
+        else if (capacity >= 100 && capacity < 150) color = "orange";
+        else if (capacity >= 150) color = "red";
+
+        if (telitettsegFilter && color !== telitettsegFilter) {
+            return;
+        }
 
         const marker =L.marker([x,y], {icon:icoonByCapacity(capacity)});
 
@@ -104,15 +115,20 @@ fetch('./adatok.json')
 
 const kategoriaSelect = document.getElementById("kategoria-filter");
 const cikkszamSelect = document.getElementById("cikkszam-filter");
+const telitettsegSelect = document.getElementById("telitettseg-filter");
 
 function updateFilters() {
     const selectedKategoria = kategoriaSelect.value;
     const selectedCikkszam = cikkszamSelect.value;
-    renderMarkers(selectedKategoria, selectedCikkszam);
+    const selectedTelitettseg=telitettsegSelect.value;
+    
+    renderMarkers(selectedKategoria, selectedCikkszam,selectedTelitettseg);
 }
 
 kategoriaSelect.addEventListener("change", updateFilters);
 cikkszamSelect.addEventListener("change", updateFilters);
+telitettsegSelect.addEventListener("change", updateFilters);
+
 
 
 
