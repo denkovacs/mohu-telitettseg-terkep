@@ -49,58 +49,111 @@ function groupByCoordinates(data) {
 
     return grouped;
 }
+//Segédfüggvények
+function parsePercent(v) {
+    if (v === null || v === undefined) return NaN;
+    if (typeof v === 'number') return v;
+    return parseFloat(String(v).replace(",", ".").replace("%", "").trim());
+}
+function colorFromValue(val) {
+    if (isNaN(val)) return "";
+    if (val >= 0 && val < 50) return "green";
+    if (val >= 50 && val < 100) return "yellow";
+    if (val >= 100 && val < 150) return "orange";
+    return "red";
+}
 
-function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter=""){
-    markers.forEach(marker=>map.removeLayer(marker));
-    markers.length=0;
-    //markerClusterGroup.clearLayers();
+
+function renderMarkers(kategoriaFilter="", cikkszamFilter="", telitettsegFilter=""){
+    // előző marker-ek törlése
+    markers.forEach(marker => map.removeLayer(marker));
+    markers.length = 0;
+
+    // ha új szűrés történt, töröljük a kék kiemelést is (mert már lehet, hogy nem illik az új halmazhoz)
+    if (activePin) {
+        map.removeLayer(activePin);
+        activePin = null;
+    }
+
     const groupedData = groupByCoordinates(locationsData);
+    const isFiltering = Boolean(kategoriaFilter || cikkszamFilter || telitettsegFilter);
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
-        let filteredLocs=locs;
-        if(kategoriaFilter)filteredLocs=filteredLocs.filter(loc => loc.kategoria === kategoriaFilter);
-        if(cikkszamFilter)filteredLocs=filteredLocs.filter(loc => loc.cikkszam === cikkszamFilter);
-        if(telitettsegFilter){
-            filteredLocs=filteredLocs.filter(loc=>{
-                const capacityStr = locs[0].teljes_kapacitaas.replace(",", ".").replace("%", "");
-                const capacity = parseFloat(capacityStr);
-                let color = "";
-                if (capacity >= 0 && capacity < 50) color = "green";
-                else if (capacity >= 50 && capacity < 100) color = "yellow";
-                else if (capacity >= 100 && capacity < 150) color = "orange";
-                else if (capacity >= 150) color = "red";
-                return color===telitettsegFilter;
+        let filteredLocs = locs.slice();
+
+        if (kategoriaFilter) filteredLocs = filteredLocs.filter(l => l.kategoria === kategoriaFilter);
+        if (cikkszamFilter) filteredLocs = filteredLocs.filter(l => l.cikkszam === cikkszamFilter);
+
+        // ha van telitettsegFilter, akkor azt alkalmazzuk: az érték, amin a szín alapul,
+        // a "szűrés módban" tarolt_telitetseg_cikk (ha nincs, fallback teljes_kapacitaas)
+        if (telitettsegFilter) {
+            filteredLocs = filteredLocs.filter(l => {
+                const val = isFiltering
+                    ? (isNaN(parsePercent(l.tarolt_telitetseg_cikk)) ? parsePercent(l.teljes_kapacitaas) : parsePercent(l.tarolt_telitetseg_cikk))
+                    : parsePercent(l.teljes_kapacitaas);
+
+                return colorFromValue(val) === telitettsegFilter;
             });
         }
 
-        if(filteredLocs.length===0)return;
+        if (filteredLocs.length === 0) return;
 
-        const [x, y] = coord.split(", ").map(c => parseFloat(c.trim()));
+        const parts = coord.split(",").map(s => s.trim());
+        const x = parseFloat(parts[0]);
+        const y = parseFloat(parts[1]);
         if (isNaN(x) || isNaN(y)) {
-            console.warn("Hibás koordináta:", koordinata);
+            console.warn("Hibás koordináta:", coord);
             return;
         }
-        
-        const capacityStr = locs[0].teljes_kapacitaas.replace(",", ".").replace("%", "");
-        const capacity = parseFloat(capacityStr);
 
-        const marker =L.marker([x,y], {icon:icoonByCapacity(capacity)});
+        // ikonhoz szükséges érték kiválasztása:
+        let iconCapacity = 0;
+        if (isFiltering) {
+            // szűrésnél: a filteredLocs közül vesszük a tarolt_telitetseg_cikk értékek maximumát (fallback teljes_kapacitaas)
+            let maxVal = -Infinity;
+            filteredLocs.forEach(l => {
+                const tVal = parsePercent(l.tarolt_telitetseg_cikk);
+                const fallback = parsePercent(l.teljes_kapacitaas);
+                const chosen = isNaN(tVal) ? fallback : tVal;
+                if (!isNaN(chosen) && chosen > maxVal) maxVal = chosen;
+            });
+            if (maxVal === -Infinity) {
+                maxVal = parsePercent(locs[0].teljes_kapacitaas) || 0;
+            }
+            iconCapacity = maxVal;
+        } else {
+            // alapértelmezett állapot: használjuk a helyszín teljes_kapacitaas értékét
+            iconCapacity = parsePercent(locs[0].teljes_kapacitaas) || 0;
+        }
 
-        marker.on('click',()=>{
-            infoPlaceholder.innerHTML= generateInfoHTML(filteredLocs);
-            if(activePin){
+        const marker = L.marker([x, y], { icon: icoonByCapacity(iconCapacity) });
+
+        marker.on('click', (e) => {
+            
+            L.DomEvent.stopPropagation(e);
+            infoPlaceholder.innerHTML = generateInfoHTML(filteredLocs);
+            if (activePin) {
                 map.removeLayer(activePin);
             }
-            activePin=L.circleMarker([x,y],{
-                radius:10,
-                color:'blue',
-                weight:3,
-                fill:false
-            }).addTo(map);   
-            });
-            marker.addTo(map);
-            markers.push(marker);  
+            activePin = L.circleMarker([x, y], {
+                radius: 10,
+                color: 'blue',
+                weight: 3,
+                fill: false
+            }).addTo(map);
+        });
+
+        marker.addTo(map);
+        markers.push(marker);
     });
+    map.on('click', () => {
+    infoPlaceholder.innerHTML = '<p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>';
+
+    if (activePin) {
+        map.removeLayer(activePin);
+        activePin = null;
+    }
+});
 }
 
 fetch('./adatok.json')
