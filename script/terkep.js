@@ -56,48 +56,36 @@ function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter="
     const groupedData = groupByCoordinates(locationsData);
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
-        
-        if (kategoriaFilter && !locs.some(loc => loc.kategoria === kategoriaFilter)) {
-            return;
+        let filteredLocs=locs;
+        if(kategoriaFilter)filteredLocs=filteredLocs.filter(loc => loc.kategoria === kategoriaFilter);
+        if(cikkszamFilter)filteredLocs=filteredLocs.filter(loc => loc.cikkszam === cikkszamFilter);
+        if(telitettsegFilter){
+            filteredLocs=filteredLocs.filter(loc=>{
+                const capacityStr = locs[0].teljes_kapacitaas.replace(",", ".").replace("%", "");
+                const capacity = parseFloat(capacityStr);
+                let color = "";
+                if (capacity >= 0 && capacity < 50) color = "green";
+                else if (capacity >= 50 && capacity < 100) color = "yellow";
+                else if (capacity >= 100 && capacity < 150) color = "orange";
+                else if (capacity >= 150) color = "red";
+                return color===telitettsegFilter;
+            });
         }
-        if (cikkszamFilter && !locs.some(loc => loc.cikkszam === cikkszamFilter)) {
-            return;
-        }
+
+        if(filteredLocs.length===0)return;
+
         const [x, y] = coord.split(", ").map(c => parseFloat(c.trim()));
         if (isNaN(x) || isNaN(y)) {
             console.warn("Hibás koordináta:", koordinata);
             return;
         }
+        
         const capacityStr = locs[0].teljes_kapacitaas.replace(",", ".").replace("%", "");
         const capacity = parseFloat(capacityStr);
-
-        //Telítettség filter
-        let color = "";
-        if (capacity >= 0 && capacity < 50) color = "green";
-        else if (capacity >= 50 && capacity < 100) color = "yellow";
-        else if (capacity >= 100 && capacity < 150) color = "orange";
-        else if (capacity >= 150) color = "red";
-
-        if (telitettsegFilter && color !== telitettsegFilter) {
-            return;
-        }
 
         const marker =L.marker([x,y], {icon:icoonByCapacity(capacity)});
 
         marker.on('click',()=>{
-
-            const selectedKategoria=kategoriaSelect.value;
-            const selectedCikkszam=cikkszamSelect.value;
-
-            let filteredLocs=locs;
-
-            if (selectedKategoria) {
-                filteredLocs = filteredLocs.filter(loc => loc.kategoria === selectedKategoria);
-            }
-            if (selectedCikkszam) {
-                filteredLocs = filteredLocs.filter(loc => loc.cikkszam === selectedCikkszam);
-            }
-
             infoPlaceholder.innerHTML= generateInfoHTML(filteredLocs);
             });
             marker.addTo(map);
