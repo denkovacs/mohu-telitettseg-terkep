@@ -6,6 +6,7 @@ attribution: '&copy;'
 
 const infoPlaceholder=document.getElementById('info-placeholder');
 let currentLocation=null;
+let activePin=null;
 
 // Ikonok kapacitás alapján
 function icoonByCapacity(value) {
@@ -87,6 +88,15 @@ function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter="
 
         marker.on('click',()=>{
             infoPlaceholder.innerHTML= generateInfoHTML(filteredLocs);
+            if(activePin){
+                map.removeLayer(activePin);
+            }
+            activePin=L.circleMarker([x,y],{
+                radius:10,
+                color:'blue',
+                weight:3,
+                fill:false
+            }).addTo(map);   
             });
             marker.addTo(map);
             markers.push(marker);  
