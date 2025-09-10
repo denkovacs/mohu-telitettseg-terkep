@@ -53,7 +53,6 @@ function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter="
     markers.forEach(marker=>map.removeLayer(marker));
     markers.length=0;
     //markerClusterGroup.clearLayers();
-
     const groupedData = groupByCoordinates(locationsData);
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
@@ -135,7 +134,6 @@ infoPlaceholder.innerHTML='<p class="info-placeholder-katt">Kattints egy pontra 
 
 function generateInfoHTML(locs) {
 const groupedByPartner = {};
-
     // Csoportosítás partner szerint
     locs.forEach(loc => {
         const partner = loc.partner.trim();
@@ -162,7 +160,7 @@ const groupedByPartner = {};
                                 <th>Kihasználtság</th>
                             </tr>
                         </thead>
-                        <tbody>`;
+                    <tbody>`;
 
         items.forEach(item => {
             const cikkszamParts = item.cikkszam.split(" - ");
@@ -170,17 +168,15 @@ const groupedByPartner = {};
             const megnevezes = cikkszamParts[1] || '';
             const kihasznaltsag = item.tarolt_telitetseg_cikk || '';
 
-            html += `<tr>
-                        <td>${cikkszam}</td>
-                        <td>${megnevezes}</td>
-                        <td>${kihasznaltsag}</td>
-                     </tr>`;
+        html += `<tr>
+                    <td>${cikkszam}</td>
+                    <td>${megnevezes}</td>
+                    <td>${kihasznaltsag}</td>
+                </tr>`;
         });
-
         html += `   </tbody>
                     </table>
                  </div><hr>`;
     });
-
     return html;
 }
