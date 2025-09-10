@@ -31,9 +31,9 @@ function icoonByCapacity(value) {
 
 const markers=[];         //Összes marker
 let locationsData=[];    //Helyszín adatok
-
-const markerClusterGroup=L.markerClusterGroup();
-map.addLayer(markerClusterGroup);
+//csoportosítás
+//const markerClusterGroup=L.markerClusterGroup();
+//map.addLayer(markerClusterGroup);
 
 function groupByCoordinates(data) {
     const grouped = {};
@@ -52,13 +52,13 @@ function groupByCoordinates(data) {
 function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter=""){
     markers.forEach(marker=>map.removeLayer(marker));
     markers.length=0;
-    markerClusterGroup.clearLayers();
+    //markerClusterGroup.clearLayers();
 
     const groupedData = groupByCoordinates(locationsData);
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
         
-         if (kategoriaFilter && !locs.some(loc => loc.kategoria === kategoriaFilter)) {
+        if (kategoriaFilter && !locs.some(loc => loc.kategoria === kategoriaFilter)) {
             return;
         }
         if (cikkszamFilter && !locs.some(loc => loc.cikkszam === cikkszamFilter)) {
@@ -101,7 +101,7 @@ function renderMarkers(kategoriaFilter="", cikkszamFilter="",telitettsegFilter="
 
             infoPlaceholder.innerHTML= generateInfoHTML(filteredLocs);
             });
-            markerClusterGroup.addLayer(marker);
+            marker.addTo(map);
             markers.push(marker);  
     });
 }
@@ -129,15 +129,14 @@ kategoriaSelect.addEventListener("change", updateFilters);
 cikkszamSelect.addEventListener("change", updateFilters);
 telitettsegSelect.addEventListener("change", updateFilters);
 
-
-
-
 map.on('click',()=>{
 infoPlaceholder.innerHTML='<p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>'
 })
+
 function generateInfoHTML(locs) {
-    const groupedByPartner = {};
-    
+const groupedByPartner = {};
+
+    // Csoportosítás partner szerint
     locs.forEach(loc => {
         const partner = loc.partner.trim();
         if (!groupedByPartner[partner]) {
@@ -145,17 +144,42 @@ function generateInfoHTML(locs) {
         }
         groupedByPartner[partner].push(loc);
     });
+
     let html = '';
+
     Object.entries(groupedByPartner).forEach(([partner, items]) => {
         const varos = items[0].varos ? ` (${items[0].varos})` : '';
         const telitettseg = items[0].teljes_kapacitaas ? items[0].teljes_kapacitaas : '';
-        const keszletdatum = items[0].keszletdatum ? items[0].keszletdatum :'';
+        const keszletdatum = items[0].keszletdatum ? items[0].keszletdatum : '';
+
         html += `<div class="info-block">
-                    <h2><strong>${partner}${varos}<br>Teljes Kihasználtság: ${telitettseg}</strong> <br>Készlet dátum: ${keszletdatum}</strong></h2>`;
+                    <h2><strong>${partner}${varos}<br>Teljes Kihasználtság: ${telitettseg}</strong><br>Készlet dátum: ${keszletdatum}</h2>
+                    <table border="1" style="border-collapse: collapse; width: 100%; margin-top: 5px;">
+                        <thead>
+                            <tr>
+                                <th>Cikkszám</th>
+                                <th>Megnevezés</th>
+                                <th>Kihasználtság</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
         items.forEach(item => {
-            html += `<p>Cikkszám: <strong>${item.cikkszam}</strong> | Kihasználtság: <strong>${item.tarolt_telitetseg_cikk}</strong></p>`;
+            const cikkszamParts = item.cikkszam.split(" - ");
+            const cikkszam = cikkszamParts[0] || '';
+            const megnevezes = cikkszamParts[1] || '';
+            const kihasznaltsag = item.tarolt_telitetseg_cikk || '';
+
+            html += `<tr>
+                        <td>${cikkszam}</td>
+                        <td>${megnevezes}</td>
+                        <td>${kihasznaltsag}</td>
+                     </tr>`;
         });
-        html += `</div><hr>`;
+
+        html += `   </tbody>
+                    </table>
+                 </div><hr>`;
     });
 
     return html;

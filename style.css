@@ -243,3 +243,6 @@ a:hover{
 .disabled{
   pointer-events: none;
 }
+td{
+  text-align: center;
+}
