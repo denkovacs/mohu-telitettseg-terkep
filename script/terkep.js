@@ -5,6 +5,8 @@ attribution: '&copy;'
 }).addTo(map);
 
 const infoPlaceholder=document.getElementById('info-placeholder');
+const osszTelitettsegSelect=document.getElementById("ossz-telitettseg-filter");
+
 let currentLocation=null;
 let activePin=null;
 
@@ -63,6 +65,42 @@ function colorFromValue(val) {
     return "red";
 }
 
+//Össz. telítettség szűrőhöz
+function renderMarkersByOsszTelitettseg(colorFilter) {
+    markers.forEach(marker => map.removeLayer(marker));
+    markers.length = 0;
+    if (activePin) {
+        map.removeLayer(activePin);
+        activePin = null;
+    }
+
+    const groupedData = groupByCoordinates(locationsData);
+
+    Object.entries(groupedData).forEach(([coord, locs]) => {
+        const capVal = parsePercent(locs[0].teljes_kapacitaas);
+        if (colorFromValue(capVal) !== colorFilter) return;
+
+        const parts = coord.split(",").map(s => s.trim());
+        const x = parseFloat(parts[0]);
+        const y = parseFloat(parts[1]);
+        if (isNaN(x) || isNaN(y)) return;
+
+        const marker = L.marker([x, y], { icon: icoonByCapacity(capVal) });
+        marker.on('click', e => {
+            L.DomEvent.stopPropagation(e);
+            infoPlaceholder.innerHTML = generateInfoHTML(locs);
+            if (activePin) map.removeLayer(activePin);
+            activePin = L.circleMarker([x, y], {
+                radius: 10,
+                color: 'blue',
+                weight: 3,
+                fill: false
+            }).addTo(map);
+        });
+        marker.addTo(map);
+        markers.push(marker);
+    });
+}
 
 function renderMarkers(kategoriaFilter="", cikkszamFilter="", telitettsegFilter=""){
     // előző marker-ek törlése
@@ -168,20 +206,41 @@ const cikkszamSelect = document.getElementById("cikkszam-filter");
 const telitettsegSelect = document.getElementById("telitettseg-filter");
 
 function updateFilters() {
+    infoPlaceholder.innerHTML = '<p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>';
+    if (activePin) {
+        map.removeLayer(activePin);
+        activePin = null;
+    }
     const selectedKategoria = kategoriaSelect.value;
     const selectedCikkszam = cikkszamSelect.value;
     const selectedTelitettseg=telitettsegSelect.value;
-    
-    renderMarkers(selectedKategoria, selectedCikkszam,selectedTelitettseg);
+    const selectedOsszTelitettseg=osszTelitettsegSelect.value;
+
+    if (selectedKategoria || selectedCikkszam || selectedTelitettseg) {
+        osszTelitettsegSelect.disabled = true;
+        osszTelitettsegSelect.value = ""; // visszaáll Összes-re
+        renderMarkers(selectedKategoria, selectedCikkszam, selectedTelitettseg);
+    } else {
+        osszTelitettsegSelect.disabled = false;
+        if (selectedOsszTelitettseg) {
+            // csak akkor, ha nincs más filter
+            renderMarkersByOsszTelitettseg(selectedOsszTelitettseg);
+        } else {
+            renderMarkers();
+        }
+    }
 }
 
 kategoriaSelect.addEventListener("change", updateFilters);
 cikkszamSelect.addEventListener("change", updateFilters);
 telitettsegSelect.addEventListener("change", updateFilters);
+osszTelitettsegSelect.addEventListener("change", updateFilters);
+
 
 map.on('click',()=>{
 infoPlaceholder.innerHTML='<p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>'
 })
+
 
 function generateInfoHTML(locs) {
 const groupedByPartner = {};

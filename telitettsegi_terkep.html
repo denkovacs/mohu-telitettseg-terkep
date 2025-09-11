@@ -85,8 +85,18 @@
                     </select>
                 </div>
                 <div class="filter-row">
-                    <span class="label">Telítettség:</span>
+                    <span class="label">Telítettség cikkenként:</span>
                     <select id="telitettseg-filter" class="regio-select">
+                        <option value="">Összes</option>
+                        <option value="green">Zöld (0%-49%)</option>
+                        <option value="yellow">Sárga (50%-99%)</option>
+                        <option value="orange">Nanrancssárga (100%-149%)</option>
+                        <option value="red">Piros (150%-999%)</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <span class="label">Össz. telítettség:</span>
+                    <select id="ossz-telitettseg-filter" class="regio-select">
                         <option value="">Összes</option>
                         <option value="green">Zöld (0%-49%)</option>
                         <option value="yellow">Sárga (50%-99%)</option>
