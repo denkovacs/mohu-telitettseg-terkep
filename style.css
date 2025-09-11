@@ -138,6 +138,9 @@ h1{
 .marker-cluster div{
   background-color: #D8E02F;
 }
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar{
+  border:none;
+}
 .megye-select, .tipus-select, .regio-select{
   background-color:white;
   border: 2px solid #008CBA;
@@ -238,6 +241,9 @@ a:hover{
     width: 100%;
     height: auto;
     order: 2;
+  }
+  .top-logo{
+    max-width: 100%;
   }
 }
 .disabled{
