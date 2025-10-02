@@ -252,3 +252,68 @@ a:hover{
 td{
   text-align: center;
 }
+#error{
+  margin-top: 15px;
+  display: none;
+  font-weight: bold;
+  color: red;
+}
+
+.login-body{
+  background-image: url('img/index-bg.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  margin:0;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container{
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 350px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+.login-container h2{
+  margin-bottom: 20px;
+  color: white;
+}
+.login-container label{
+  display: block;
+  text-align: left;
+  margin-top: 10px;
+  font-weight: bold;
+  color: white;
+}
+.login-container input{
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 2px solid #008CBA;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.login-container button{
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #008CBA;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.login-container button:hover{
+  background-color: #0073a6;
+}
+.login-container input,
+.login-container button {
+  box-sizing: border-box;
+}

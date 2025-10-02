@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOHU P&G | Bejelentkezés</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="navbar navbar-index">
+        <a href="login.html"><img src="img/top-logo.png" alt="Logo" class="top-logo"></a>
+    </div>
+    <div class="login-container">
+        <h2>Bejelentkezés</h2>
+        <form id="loginForm">
+            <label for="username"> Felhasználónév:</label>
+            <input type="text" id="username" required>
+            <label for="password">Jelszó:</label>
+            <input type="password" id="password" required>
+            <button type="submit">Belépés</button>
+        </form>
+        <p id="error">Hibás Bejelentkezés! (Hibás felhasználónév/Jelszó)</p>
+    </div>
+</body>
+<script src="script/login.js"></script>
+</html>
