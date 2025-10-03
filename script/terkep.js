@@ -131,12 +131,12 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
 
         if (isCompareMode) {
             const diff = getCapacityDifference(coord);
-            let bgColor = diff > 0 ? 'orange' : diff < 0 ? 'green' : 'lightgrey';
+            let bgColor = diff > 0 ? 'orange' : diff < 0 ? 'greenyellow' : 'lightgrey';
 
             const marker = L.marker([x, y], {
                 icon: L.divIcon({
                     className: 'custom-number-marker',
-                    html: `<div style="background: ${bgColor}; border-radius:5px;">${diff.toFixed(1)}%</div>`,
+                    html: `<div style="background: ${bgColor}; border-radius:5px;">${diff.toFixed(0)}%</div>`,
                     iconSize: [30, 30],
                     iconAnchor: [15, 15]
                 })
@@ -168,8 +168,8 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
 let previousData = [];
 
 Promise.all([
-    fetch('./adatok-1.json').then(res => res.json()),
-    fetch('./adatok.json').then(res => res.json())
+    fetch('./adatok.json').then(res => res.json()),
+    fetch('./adatok-1.json').then(res => res.json())
 ]).then(([current, previous]) => {
     locationsData = current;
     previousData = previous;
@@ -185,7 +185,7 @@ function getCapacityDifference(coord) {
     const currentCap = parsePercent(currentLocs[0].teljes_kapacitaas);
     const previousCap = parsePercent(previousLocs[0].teljes_kapacitaas);
 
-    return ((currentCap - previousCap) / previousCap) * 100;
+    return currentCap - previousCap;
 }
 
 const kategoriaSelect = document.getElementById("kategoria-filter");
