@@ -317,3 +317,10 @@ td{
 .login-container button {
   box-sizing: border-box;
 }
+.custom-number-marker {
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    font-size: 14px;
+    border:none;
+}

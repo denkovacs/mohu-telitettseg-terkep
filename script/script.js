@@ -13,14 +13,14 @@ fetch('./components/navbar.html')
             <a class="label-link" href="index.html">Főoldal</a>
             <a class="label-link" href="telitettsegi_terkep.html">Telítettségi Térkép</a>
             <a class="label-link" href="vezerlopult.html">Vezérlőpult</a>
-            <a class="" href="" style="float: right;" onclick="logout()">Kijelentkezés</a>
+            <a class="logout" onclick="logout()">Kijelentkezés</a>
         `;
         }
         else if(role==="user"){
             menuLinks.innerHTML=`
             <a class="label-link" href="index.html">Főoldal</a>
             <a class="label-link" href="telitettsegi_terkep.html">Telítettségi Térkép</a>
-            <a class="" href="" style="float: right;" onclick="logout()">Kijelentkezés</a>
+            <a class="logout" onclick="logout()">Kijelentkezés</a>
         `;
         }
 
