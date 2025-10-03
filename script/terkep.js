@@ -71,42 +71,41 @@ function colorFromValue(val) {
 }
 
 //Össz. telítettség szűrőhöz
-function renderMarkersByOsszTelitettseg(colorFilter) {
+function renderMarkersByOsszTelitettseg(colorFilter, kategoriaFilter = "", cikkszamFilter = "", telitettsegFilter = "") {
     markers.forEach(marker => map.removeLayer(marker));
     markers.length = 0;
-    if (activePin) {
-        map.removeLayer(activePin);
-        activePin = null;
-    }
+    if (activePin) { map.removeLayer(activePin); activePin = null; }
 
     const groupedData = groupByCoordinates(locationsData);
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
-        const capVal = parsePercent(locs[0].teljes_kapacitaas);
-        if (colorFromValue(capVal) !== colorFilter) return;
+        // Szűrés minden loc elemre
+        const filteredLocs = locs.filter(loc => {
+            if (colorFromValue(parsePercent(loc.teljes_kapacitaas)) !== colorFilter) return false;
+            if (kategoriaFilter && loc.kategoria !== kategoriaFilter) return false;
+            if (cikkszamFilter && loc.cikkszam !== cikkszamFilter) return false;
+            if (telitettsegFilter && colorFromValue(parsePercent(loc.tarolt_telitetseg_cikk)) !== telitettsegFilter) return false;
+            return true;
+        });
 
-        const parts = coord.split(",").map(s => s.trim());
-        const x = parseFloat(parts[0]);
-        const y = parseFloat(parts[1]);
-        if (isNaN(x) || isNaN(y)) return;
+        if (!filteredLocs.length) return; // nincs találat, nem rajzolunk
 
+        const parts = coord.split(",").map(s => parseFloat(s.trim()));
+        if (parts.some(isNaN)) return;
+        const [x, y] = parts;
+
+        const capVal = parsePercent(filteredLocs[0].teljes_kapacitaas); // ikonhoz az első elemet használjuk
         const marker = L.marker([x, y], { icon: icoonByCapacity(capVal) });
         marker.on('click', e => {
             L.DomEvent.stopPropagation(e);
-            infoPlaceholder.innerHTML = generateInfoHTML(locs);
+            infoPlaceholder.innerHTML = generateInfoHTML(filteredLocs);
             if (activePin) map.removeLayer(activePin);
-            activePin = L.circleMarker([x, y], {
-                radius: 10,
-                color: 'blue',
-                weight: 3,
-                fill: false
-            }).addTo(map);
+            activePin = L.circleMarker([x, y], { radius: 10, color: 'blue', weight: 3, fill: false }).addTo(map);
         });
         marker.addTo(map);
         markers.push(marker);
     });
 }
-
 function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFilter = "") {
     markers.forEach(marker => map.removeLayer(marker));
     markers.length = 0;
@@ -116,15 +115,23 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
     const isCompareMode = document.getElementById('filter-osszehasonlitas').classList.contains('active');
 
     Object.entries(groupedData).forEach(([coord, locs]) => {
+        // FILTER
+        const filteredLocs = locs.filter(loc => {
+            if (kategoriaFilter && loc.kategoria !== kategoriaFilter) return false;
+            if (cikkszamFilter && loc.cikkszam !== cikkszamFilter) return false;
+            if (telitettsegFilter && colorFromValue(parsePercent(loc.tarolt_telitetseg_cikk)) !== telitettsegFilter) return false;
+            return true;
+        });
+
+        if (!filteredLocs.length) return;
+
         const parts = coord.split(",").map(s => parseFloat(s.trim()));
         if (parts.some(isNaN)) return;
         const [x, y] = parts;
+
         if (isCompareMode) {
-            // Különbség alapú marker
             const diff = getCapacityDifference(coord);
-            let bgColor = 'lightgrey';
-            if (diff > 0) bgColor = 'orange';
-            else if (diff < 0) bgColor = 'green';
+            let bgColor = diff > 0 ? 'orange' : diff < 0 ? 'green' : 'lightgrey';
 
             const marker = L.marker([x, y], {
                 icon: L.divIcon({
@@ -136,7 +143,7 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
             });
             marker.on('click', e => {
                 L.DomEvent.stopPropagation(e);
-                infoPlaceholder.innerHTML = generateInfoHTML(locs);
+                infoPlaceholder.innerHTML = generateInfoHTML(filteredLocs);
                 if (activePin) map.removeLayer(activePin);
                 activePin = L.circleMarker([x, y], { radius: 10, color: 'blue', weight: 3, fill: false }).addTo(map);
             });
@@ -144,12 +151,11 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
             markers.push(marker);
 
         } else {
-            // Normál marker render
-            const capVal = parsePercent(locs[0].teljes_kapacitaas);
+            const capVal = parsePercent(filteredLocs[0].teljes_kapacitaas);
             const marker = L.marker([x, y], { icon: icoonByCapacity(capVal) });
             marker.on('click', e => {
                 L.DomEvent.stopPropagation(e);
-                infoPlaceholder.innerHTML = generateInfoHTML(locs);
+                infoPlaceholder.innerHTML = generateInfoHTML(filteredLocs);
                 if (activePin) map.removeLayer(activePin);
                 activePin = L.circleMarker([x, y], { radius: 10, color: 'blue', weight: 3, fill: false }).addTo(map);
             });
@@ -205,7 +211,11 @@ function updateFilters() {
         osszTelitettsegSelect.disabled = false;
         if (selectedOsszTelitettseg) {
             // csak akkor, ha nincs más filter
-            renderMarkersByOsszTelitettseg(selectedOsszTelitettseg);
+            renderMarkersByOsszTelitettseg(
+                selectedOsszTelitettseg,
+                selectedKategoria,
+                selectedCikkszam,
+                selectedTelitettseg);
         } else {
             renderMarkers();
         }
