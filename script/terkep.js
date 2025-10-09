@@ -147,6 +147,10 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
                 if (activePin) map.removeLayer(activePin);
                 activePin = L.circleMarker([x, y], { radius: 10, color: 'blue', weight: 3, fill: false }).addTo(map);
             });
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds(), { padding: [30, 30] });
+            }
             marker.addTo(map);
             markers.push(marker);
 
@@ -159,6 +163,10 @@ function renderMarkers(kategoriaFilter = "", cikkszamFilter = "", telitettsegFil
                 if (activePin) map.removeLayer(activePin);
                 activePin = L.circleMarker([x, y], { radius: 10, color: 'blue', weight: 3, fill: false }).addTo(map);
             });
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds(), { padding: [30, 30] });
+            }
             marker.addTo(map);
             markers.push(marker);
         }
