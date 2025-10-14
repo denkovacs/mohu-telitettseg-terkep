@@ -13,6 +13,7 @@ fetch('./components/navbar.html')
             <a class="label-link" href="index.html">Főoldal</a>
             <a class="label-link" href="telitettsegi_terkep.html">Telítettségi Térkép</a>
             <a class="label-link" href="vezerlopult.html">Vezérlőpult</a>
+            <a class="label-link" href="hso-horeca.html">HSO - Horeca</a>
             <a class="logout" onclick="logout()">Kijelentkezés</a>
         `;
         }
@@ -20,6 +21,7 @@ fetch('./components/navbar.html')
             menuLinks.innerHTML=`
             <a class="label-link" href="index.html">Főoldal</a>
             <a class="label-link" href="telitettsegi_terkep.html">Telítettségi Térkép</a>
+            <a class="label-link" href="hso-horeca.html">HSO - Horeca</a>
             <a class="logout" onclick="logout()">Kijelentkezés</a>
         `;
         }

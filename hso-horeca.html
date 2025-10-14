@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="style.css">
+    <title>MOHU P&G | HSO - HORECA - térkép</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+</head>
+
+<body>
+    <div id="nav" class="navbar-green"></div>
+    <div class="main-container">
+        <aside id="info-panel">
+            <h1>HSO - HORECA térkép</h1>
+            <div id="filter-panel">
+                <h1>Szűrők</h1>
+                <div class="filter-row">
+                    <span class="label">Elszállító partner:</span>
+                    <select id="el-partner-select" class="regio-select">
+                        <option value="">Összes</option>
+                        <option value="BIOFILTER Zrt.">BIOFILTER Zrt.</option>
+                        <option value="Talajerőgazdálkodási Kft.">Talajerőgazdálkodási Kft.</option>
+                        <option value="BIO-EU Kft.">BIO-EU Kft.</option>
+                        <option value="BIOFILTER Zrt.">BIOFILTER Zrt.</option>
+                        <option value="Money Trade Kft">Money Trade Kft</option>
+                        <option value="Helios-Gastro Zrt.">Helios-Gastro Zrt.</option>
+                        <option value="Biotrans Kft.">Biotrans Kft.</option>
+                        <option value="ÖKOFUEL Kft.">ÖKOFUEL Kft.</option>
+                        <option value="Gastroil Magyarország Zrt.">Gastroil Magyarország Zrt.</option>
+
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <span class="label">Top 10 Partner:</span>
+                    <select id="cikkszam-filter" class="regio-select">
+                        <option value="">Összes</option>
+                        <option value="Progress Étteremhálózat Kft.">Progress Étteremhálózat Kft.</option>
+                        <option value="Fusion Zrt.">Fusion Zrt.</option>
+                        <option value="Interfood Plusz Kft.">Interfood Plusz Kft.</option>
+                        <option value="PANNON FOOD CATERING Kft.">PANNON FOOD CATERING Kft.</option>
+                        <option value="MOGYI KFT">MOGYI KFT</option>
+                        <option value="AmRest Kft.">AmRest Kft.</option>
+                        <option value="Győri Keksz Kft">Győri Keksz Kft</option>
+                        <option value="Savencia F&D HU Zrt.">Savencia F&D HU Zrt.</option>
+                        <option value="DELIREST Kft.">DELIREST Kft.</option>
+                        <option value="SPAR Magyarország Kft.">SPAR Magyarország Kft.</option>
+                    </select>
+                </div>
+            </div>
+            <div id="info-placeholder">
+                <p class="info-placeholder-katt">Kattints egy pontra a részletekért.</p>
+            </div>
+        </aside>
+        <div id="map">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br><br><br><br><br><br><br><br><br>
+            <h1>FOLYAMATBAN VAN!!</h1>
+        </div>
+    </div>
+    <script src="script/script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="script/auth.js"></script>
+    <script src="script/hso-horeca.js"></script>
+</body>
+
+</html>
