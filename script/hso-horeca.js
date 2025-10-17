@@ -24,7 +24,7 @@ let selectedUgyfel = "";
 
 const markerClusterGroup = L.markerClusterGroup();
 map.addLayer(markerClusterGroup);
-fetch('./hso-horeca.csv')
+fetch("https://github.com/denkovacs/mohu-telitettseg-terkep/releases/download/v1.0/hso-horeca.csv")
     .then(response => response.text())
     .then(csvText => {
         const parsed = Papa.parse(csvText, {
